@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public abstract class ValidInputData {
-    public int validInt(Scanner scanner){
+    public int validInt(Scanner scanner) {
         int value;
         while (true) {
             if (scanner.hasNextInt()) {

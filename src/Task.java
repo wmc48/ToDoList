@@ -1,42 +1,37 @@
 import java.time.LocalDate;
 
 public class Task {
-    private int id = 0;
-    private String description;
-    private LocalDate deadlinie;
-    private int priority;
+    private final int id;
+    private final String description;
+    private final LocalDate deadline;
+    private final int priority;
 
-
-
-    public Task(String description, LocalDate deadlinie, int priority) {
-        this.id = id++;
+    public Task(int id, String description, LocalDate deadline, int priority) {
+        this.id = id;
         this.description = description;
-        this.deadlinie = deadlinie;
+        this.deadline = deadline;
         this.priority = priority;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDate getDeadlinie() {
-        return deadlinie;
-    }
-
-    public int getPriority() {
-        return priority;
     }
 
     public int getId() {
         return id;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
     @Override
     public String toString() {
-        return "Task{" +
-                "description='" + description + '\'' +
-                ", deadlinie=" + deadlinie +
-                ", priority=" + priority +
-                '}';
+        return String.format("Opis: %-30s | Deadline: %s | Priorytet: %2d | ID w bd: %3d",
+                description, deadline, priority, id);
     }
 }

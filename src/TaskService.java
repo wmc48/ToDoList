@@ -2,59 +2,58 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class TaskService extends ValidInputData {
-    private final ArrayList<Task> tasks;
+    private List<Task> tasks;
     Scanner scanner = new Scanner(System.in);
-
-
-    public TaskService() {
-        tasks = new ArrayList<>();
-    }
+    DatabaseManager databaseManager = new DatabaseManager();
 
     public void deleteTask() {
         displayTasks();
         System.out.println("Wybierz zadanie które chcesz usunąć: ");
         int choice = validInt(scanner);
-        if (choice <= tasks.size() && choice > 0) {
-            System.out.println("Usunięto zadanie " + choice + " Opis: " + tasks.get(choice - 1).getDescription() +
-                    " Deadline: " + tasks.get(choice - 1).getDeadlinie() + " Priorytet: " + tasks.get(choice - 1).getPriority());
-            tasks.remove(choice - 1);
-            displayTasks();
-        } else {
-            System.out.println("Wybrano nieprawidłowe zadanie");
-        }
+        int taskID = tasks.get(choice - 1).getId();
+
+        System.out.println("wybrano zadanie " + choice + " o nr id w bd: " + taskID );
+        databaseManager.deleteTaskFromDatabase(taskID);
     }
+
 
     public void editTask() {
         displayTasks();
         System.out.println("Wybierz zadanie które chcesz edytować: ");
         int choice = validInt(scanner);
-        if (choice <= tasks.size() && choice > 0) {
-            System.out.println("Edytujesz zadanie " + choice + " Opis: " + tasks.get(choice - 1).getDescription() +
-                    " Deadline: " + tasks.get(choice - 1).getDeadlinie() + " Priorytet: " + tasks.get(choice - 1).getPriority());
-            String newTaskDescription = addNewDescription();
-            LocalDate deadlinie = addTaskDeadline();
-            int newTaskPriority = addTaskPriority();
+        System.out.println("Edytujesz zadanie " + choice);
 
-            Task task = new Task(newTaskDescription, deadlinie, newTaskPriority);
-            tasks.set(choice - 1, task);
-            displayTasks();
-        } else {
-            System.out.println("Wybrano nieprawidłowe zadanie");
-        }
+        String newDescription = addNewDescription();
+        LocalDate newDeadlinie = addTaskDeadline();
+        int newPriority = addTaskPriority();
+        int taskID = tasks.get(choice - 1).getId();
+
+        Task task = new Task(taskID, newDescription, newDeadlinie, newPriority);
+        databaseManager.editTaskById(task);
+
     }
 
     public void addTask() {
-        String newTaskDescription = addNewDescription();
-        LocalDate deadlinie = addTaskDeadline();
-        int newTaskPriority = addTaskPriority();
+        String description = addNewDescription();
+        LocalDate deadline = addTaskDeadline();
+        int priority = addTaskPriority();
+        Task task = new Task(0, description, deadline, priority); //id może byc 0 jest w bd jest autoincrement
+        databaseManager.addTaskToDatabase(task);
+    }
 
-        Task task = new Task(newTaskDescription, deadlinie, newTaskPriority);
-        tasks.add(task);
-        System.out.println("Zadanie dodane: " + task);
+
+    public void displayTasks() {
+        tasks = databaseManager.getAllTasks();
+
+        System.out.println("Lista wszystkich zadań:");
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            System.out.println("Zadanie " + (i + 1) + ": \t" + task);
+        }
     }
 
     private LocalDate addTaskDeadline() {
@@ -90,19 +89,6 @@ public class TaskService extends ValidInputData {
     public String addNewDescription() {
         System.out.println("Podaj treść nowego zadania:");
         return scanner.nextLine();
-    }
 
-
-    public void displayTasks() {
-        if (tasks.isEmpty()) {
-            System.out.println("Lista zadań jest pusta.");
-        } else {
-            System.out.println("Obecna lista zadań:");
-            for (int i = 0; i < tasks.size(); i++) {
-                System.out.println((i + 1) + ". Deadline: " + tasks.get(i).getDeadlinie() +
-                        ".\t Priorytet: " + tasks.get(i).getPriority() + "|\t Opis: " + tasks.get(i).getDescription());
-            }
-            System.out.println("wielkość tablicy " + tasks.size());
-        }
     }
 }

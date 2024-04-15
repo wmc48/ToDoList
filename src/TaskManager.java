@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class TaskManager extends ValidInputData{
+public class TaskManager extends ValidInputData {
     TaskService taskService = new TaskService();
     Scanner scanner = new Scanner(System.in);
     boolean exit = false;
@@ -29,18 +29,17 @@ public class TaskManager extends ValidInputData{
                     taskService.editTask();
                     break;
                 case 4:
-                     taskService.deleteTask();
+                    taskService.deleteTask();
                     break;
                 case 5:
                     exit = true;
-                    System.out.println("Dziękujemy! Do widzenia.");
+                    System.out.println("Program zakończył działanie");
                     break;
                 default:
                     System.out.println("Nieprawidłowy wybór. Spróbuj ponownie.");
                     break;
             }
         }
-
         scanner.close();
     }
 }
